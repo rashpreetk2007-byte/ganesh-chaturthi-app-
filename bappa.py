@@ -2,7 +2,6 @@ import streamlit as st
 from PIL import Image
 import os
 import random
-import time
 
 # =========================================================
 # HAPPY GANESH CHATURTHI 2026
@@ -28,155 +27,513 @@ if "blessing" not in st.session_state:
         "🙏 May Bappa bless you with happiness, peace and success. 🙏"
     )
 
-if "show_welcome" not in st.session_state:
-    st.session_state.show_welcome = False
-
-if "flower_count" not in st.session_state:
-    st.session_state.flower_count = 0
+if "flowers" not in st.session_state:
+    st.session_state.flowers = 0
 
 
 # =========================================================
-# CSS
+# COMPLETE LIGHT FESTIVE DESIGN
 # =========================================================
 
 st.markdown("""
 <style>
 
+/* ========================================================
+   MAIN PAGE
+   ======================================================== */
+
 .stApp {
+
+    min-height: 100vh;
+
     background:
         radial-gradient(
-            circle at 50% 10%,
-            rgba(255,190,60,0.25),
-            transparent 30%
+            circle at 50% 8%,
+            rgba(255, 196, 70, 0.42),
+            transparent 28%
         ),
+
+        radial-gradient(
+            circle at 8% 65%,
+            rgba(255, 150, 180, 0.25),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 92% 70%,
+            rgba(255, 210, 90, 0.28),
+            transparent 25%
+        ),
+
         linear-gradient(
             180deg,
-            #080713 0%,
-            #21142b 48%,
-            #090812 100%
+            #fffaf0 0%,
+            #fff0d5 45%,
+            #ffe5c4 100%
         );
 
-    color: white;
+    color: #5b321c;
 }
+
+
+/* ========================================================
+   PHONE CONTAINER
+   ======================================================== */
 
 .block-container {
+
     max-width: 500px !important;
-    padding-top: 18px !important;
+
+    padding-top: 15px !important;
+
     padding-left: 12px !important;
+
     padding-right: 12px !important;
-    padding-bottom: 30px !important;
+
+    padding-bottom: 35px !important;
+
+    margin: auto;
 }
 
-.hero {
+
+/* ========================================================
+   TITLE
+   ======================================================== */
+
+.main-title {
+
     text-align: center;
-    padding: 8px 5px 14px 5px;
-}
 
-.hero-title {
-    color: #ffd45c;
-    font-size: clamp(29px, 8vw, 42px);
+    color: #b84f08;
+
+    font-size: clamp(
+        28px,
+        8vw,
+        41px
+    );
+
     font-weight: 900;
-    line-height: 1.15;
+
+    line-height: 1.12;
+
+    margin-top: 4px;
+
+    margin-bottom: 4px;
+
     text-shadow:
-        0 0 8px rgba(255,200,70,.45),
-        0 0 25px rgba(255,150,30,.20);
+        0 2px 5px rgba(150, 75, 0, 0.15);
 }
 
-.hero-year {
-    color: #ffad32;
-    font-size: 38px;
-    font-weight: 900;
-    margin-top: 2px;
-}
 
-.hero-subtitle {
-    color: #fff;
-    font-size: 16px;
-    line-height: 1.5;
-    margin-top: 8px;
-}
+/* ========================================================
+   YEAR
+   ======================================================== */
 
-.gold-line {
+.year {
+
     text-align: center;
-    color: #ffd45c;
-    font-size: 21px;
-    letter-spacing: 8px;
-    margin: 5px 0 14px 0;
+
+    color: #d87908;
+
+    font-size: 39px;
+
+    font-weight: 900;
+
+    margin-bottom: 8px;
 }
 
-.image-box {
+
+/* ========================================================
+   SUBTITLE
+   ======================================================== */
+
+.subtitle {
+
+    text-align: center;
+
+    color: #63391f;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    padding: 0 10px;
+
+    margin-bottom: 12px;
+}
+
+
+/* ========================================================
+   DECORATION
+   ======================================================== */
+
+.decor {
+
+    text-align: center;
+
+    color: #d88916;
+
+    font-size: 20px;
+
+    letter-spacing: 7px;
+
+    margin-bottom: 13px;
+}
+
+
+/* ========================================================
+   IMAGE CARD
+   ======================================================== */
+
+.image-card {
+
+    width: 100%;
+
+    max-width: 445px;
+
+    margin: auto;
+
     padding: 8px;
-    border-radius: 25px;
+
+    border-radius: 24px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(255,205,90,.18),
-            rgba(255,255,255,.03)
+            #fffdf7,
+            #fff1d7
         );
 
-    border: 2px solid rgba(255,205,90,.55);
+    border: 3px solid #e0a52f;
 
     box-shadow:
-        0 0 20px rgba(255,180,40,.22),
-        0 0 50px rgba(255,140,20,.10);
+        0 5px 20px rgba(150, 85, 20, 0.15),
+        0 0 25px rgba(230, 165, 50, 0.25);
+
+    overflow: hidden;
 }
 
-.image-box img {
-    border-radius: 18px !important;
+
+/* ========================================================
+   IMAGE
+   ======================================================== */
+
+.image-card img {
+
+    width: 100% !important;
+
+    max-height: 440px !important;
+
+    object-fit: contain !important;
+
+    border-radius: 17px !important;
+
+    display: block;
+
+    margin: auto;
 }
+
+
+/* ========================================================
+   DIYAS
+   ======================================================== */
 
 .diya-row {
+
     text-align: center;
-    font-size: 28px;
-    margin: 13px 0;
-    letter-spacing: 22px;
+
+    font-size: 27px;
+
+    margin-top: 13px;
+
+    margin-bottom: 12px;
+
+    letter-spacing: 14px;
 }
 
-.card {
-    background: rgba(255,255,255,.055);
-    border: 1px solid rgba(255,205,90,.20);
-    border-radius: 18px;
-    padding: 15px;
-    margin-top: 12px;
+
+/* ========================================================
+   SECTION CARDS
+   ======================================================== */
+
+.section-card {
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.78
+        );
+
+    border:
+
+        1px solid
+        rgba(
+            205,
+            130,
+            35,
+            0.25
+        );
+
+    border-radius: 19px;
+
+    padding: 14px;
+
+    margin-top: 13px;
+
+    box-shadow:
+        0 5px 18px
+        rgba(
+            140,
+            75,
+            20,
+            0.09
+        );
 }
 
-.mantra-display {
+
+/* ========================================================
+   SECTION HEADINGS
+   ======================================================== */
+
+.section-card h3 {
+
+    color: #9b470c !important;
+
+    font-weight: 800 !important;
+}
+
+
+/* ========================================================
+   MANTRA
+   ======================================================== */
+
+.mantra {
+
     text-align: center;
-    color: #ffe5aa;
+
+    color: #a94e08;
+
     font-size: 20px;
+
     font-weight: 800;
-    padding: 10px;
+
+    padding: 10px 5px;
 }
+
+
+/* ========================================================
+   COUNTER
+   ======================================================== */
 
 .counter {
+
     text-align: center;
-    color: #ffd45c;
-    font-size: 28px;
+
+    color: #c46308;
+
+    font-size: 29px;
+
     font-weight: 900;
-    margin: 8px;
+
+    margin: 7px 0;
 }
+
+
+/* ========================================================
+   BUTTONS
+   ======================================================== */
+
+.stButton > button {
+
+    width: 100%;
+
+    min-height: 48px;
+
+    border-radius: 14px;
+
+    border: 2px solid #d99327;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e08a18,
+            #f2b632
+        );
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 10px
+        rgba(
+            170,
+            90,
+            15,
+            0.15
+        );
+
+    transition: 0.2s;
+}
+
+
+.stButton > button:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #d97508,
+            #eda929
+        );
+
+    color: white;
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================================
+   SELECTBOX
+   ======================================================== */
+
+.stSelectbox label {
+
+    color: #63391f !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* ========================================================
+   TOGGLE
+   ======================================================== */
+
+.stCheckbox label {
+
+    color: #63391f !important;
+
+    font-weight: 700 !important;
+}
+
+
+/* ========================================================
+   INFO / SUCCESS
+   ======================================================== */
+
+.stSuccess {
+
+    border-radius: 14px;
+}
+
+.stInfo {
+
+    border-radius: 14px;
+}
+
+
+/* ========================================================
+   FOOTER
+   ======================================================== */
 
 .footer-main {
+
     text-align: center;
-    color: #ffb52e;
+
+    color: #b65308;
+
     font-size: 21px;
+
     font-weight: 900;
-    margin-top: 22px;
+
+    margin-top: 23px;
 }
 
-.footer-sub {
+
+.footer-credit {
+
     text-align: center;
-    color: #9294a2;
+
+    color: #795c4b;
+
     font-size: 12px;
-    margin-top: 8px;
+
+    margin-top: 9px;
 }
 
-.small-note {
-    text-align: center;
-    color: #c5c5ca;
-    font-size: 13px;
-    margin-top: 8px;
+
+/* ========================================================
+   MOBILE
+   ======================================================== */
+
+@media (max-width: 400px) {
+
+    .block-container {
+
+        padding-left: 9px !important;
+
+        padding-right: 9px !important;
+    }
+
+    .main-title {
+
+        font-size: 29px;
+    }
+
+    .year {
+
+        font-size: 36px;
+    }
+
+    .subtitle {
+
+        font-size: 15px;
+    }
+
+    .image-card {
+
+        padding: 6px;
+
+        border-radius: 20px;
+    }
+
+    .image-card img {
+
+        max-height: 390px !important;
+    }
+
+    .diya-row {
+
+        font-size: 24px;
+
+        letter-spacing: 9px;
+    }
+
+}
+
+
+/* ========================================================
+   HIDE STREAMLIT DEFAULT ELEMENTS
+   ======================================================== */
+
+#MainMenu {
+
+    visibility: hidden;
+}
+
+footer {
+
+    visibility: hidden;
+}
+
+header {
+
+    visibility: hidden;
 }
 
 </style>
@@ -184,41 +541,39 @@ st.markdown("""
 
 
 # =========================================================
-# HERO
+# TOP TITLE
 # =========================================================
 
-st.markdown("""
-<div class="hero">
+st.markdown(
+    '<div class="main-title">'
+    '🙏 Happy Ganesh Chaturthi 🙏'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-    <div class="hero-title">
-        ✨ Happy Ganesh Chaturthi ✨
-    </div>
+st.markdown(
+    '<div class="year">2026</div>',
+    unsafe_allow_html=True
+)
 
-    <div class="hero-year">
-        2026
-    </div>
+st.markdown(
+    '<div class="subtitle">'
+    '🌸 May Bappa bless you with joy, peace & prosperity 🌸'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-    <div class="hero-subtitle">
-        🙏 May Bappa bless you with joy, peace & prosperity 🙏
-    </div>
-
-</div>
-
-<div class="gold-line">
-    ✦ ✦ ✦
-</div>
-""", unsafe_allow_html=True)
+st.markdown(
+    '<div class="decor">✦ ✦ ✦</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
 # GANESH IMAGE
 # =========================================================
 
-# IMPORTANT:
-# Put your actual image file in the SAME GitHub folder
-# as bappa.py.
-
-possible_images = [
+image_files = [
     "GaneshJi.png",
     "GaneshJi.jpg",
     "file_00000000a74482098265ae866f1a87d0.png"
@@ -226,24 +581,31 @@ possible_images = [
 
 image_path = None
 
-for filename in possible_images:
-    if os.path.exists(filename):
-        image_path = filename
+for file_name in image_files:
+
+    if os.path.exists(file_name):
+
+        image_path = file_name
         break
 
-if image_path:
+
+if image_path is not None:
 
     try:
 
-        img = Image.open(image_path)
+        ganesh_image = Image.open(image_path)
+
+        if ganesh_image.mode not in ["RGB", "RGBA"]:
+
+            ganesh_image = ganesh_image.convert("RGB")
 
         st.markdown(
-            '<div class="image-box">',
+            '<div class="image-card">',
             unsafe_allow_html=True
         )
 
         st.image(
-            img,
+            ganesh_image,
             use_container_width=True
         )
 
@@ -254,13 +616,18 @@ if image_path:
 
     except Exception:
 
-        st.error("Ganesh Ji image could not be opened.")
+        st.error(
+            "Ganesh Ji image could not be opened."
+        )
 
 else:
 
     st.warning(
-        "Ganesh Ji image is not found. "
-        "Add GaneshJi.png or GaneshJi.jpg to your GitHub repository."
+        "Ganesh Ji image not found."
+    )
+
+    st.info(
+        "Upload GaneshJi.png in the same GitHub folder as bappa.py."
     )
 
 
@@ -269,86 +636,109 @@ else:
 # =========================================================
 
 st.markdown(
-    """
-    <div class="diya-row">
-        🪔 🪔 🪔
-    </div>
-    """,
+    '<div class="diya-row">🪔 🪔 🪔</div>',
     unsafe_allow_html=True
 )
 
 
 # =========================================================
-# FEATURE 1 - DAILY BLESSING
+# FEATURE 1
+# DAILY BLESSING
 # =========================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
 
 st.subheader("🙏 Bappa's Blessing")
 
 blessings = [
+
     "🙏 May Bappa remove every obstacle from your path. 🙏",
 
     "🌸 May your life be filled with happiness and peace. 🌸",
 
-    "✨ May Lord Ganesha bless your new beginnings. ✨",
+    "✨ May Lord Ganesha bless all your new beginnings. ✨",
 
     "🪔 May your home be filled with prosperity and positivity. 🪔",
 
     "🌺 May Bappa give you wisdom, strength and success. 🌺",
 
     "🙏 May every difficulty become easier with Bappa's blessings. 🙏"
+
 ]
 
 if st.button(
-    "✨ Get New Blessing",
+    "✨ Receive New Blessing",
+    key="blessing_button",
     use_container_width=True
 ):
 
-    st.session_state.blessing = random.choice(blessings)
+    st.session_state.blessing = random.choice(
+        blessings
+    )
 
-st.success(st.session_state.blessing)
+st.success(
+    st.session_state.blessing
+)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# FEATURE 2 - MANTRA
+# FEATURE 2
+# MANTRA
 # =========================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
 
 st.subheader("🕉️ Divine Mantra")
 
 mantras = [
+
     "ॐ गं गणपतये नमः",
+
     "ॐ श्री गणेशाय नमः",
+
     "गणपति बप्पा मोरया",
+
     "वक्रतुण्ड महाकाय"
+
 ]
 
 selected_mantra = st.selectbox(
-    "Select Mantra",
-    mantras
+    "Choose a mantra",
+    mantras,
+    key="mantra_select"
 )
 
 st.markdown(
-    f"""
-    <div class="mantra-display">
-        {selected_mantra}
-    </div>
-    """,
+    f'<div class="mantra">{selected_mantra}</div>',
     unsafe_allow_html=True
 )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# FEATURE 3 - 108 MANTRA COUNTER
+# FEATURE 3
+# 108 MANTRA COUNTER
 # =========================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
 
 st.subheader("🔢 108 Mantra Counter")
 
@@ -358,20 +748,25 @@ with col1:
 
     if st.button(
         "🙏 Chant +1",
+        key="chant_button",
         use_container_width=True
     ):
 
         if st.session_state.count < 108:
+
             st.session_state.count += 1
+
 
 with col2:
 
     if st.button(
         "🔄 Reset",
+        key="reset_button",
         use_container_width=True
     ):
 
         st.session_state.count = 0
+
 
 st.markdown(
     f"""
@@ -389,21 +784,69 @@ st.progress(
 if st.session_state.count == 108:
 
     st.success(
-        "🌺 108 Mantra Complete! Ganpati Bappa Morya! 🙏"
+        "🌺 108 Mantra Complete! "
+        "Ganpati Bappa Morya! 🙏"
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# FEATURE 4 - FESTIVAL GREETING
+# FEATURE 4
+# FLOWER OFFERING
 # =========================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
+
+st.subheader("🌸 Offer Flowers")
+
+if st.button(
+    "🌺 Offer Flower to Bappa",
+    key="flower_button",
+    use_container_width=True
+):
+
+    st.session_state.flowers += 1
+
+    st.toast(
+        "🌸 Flower offered to Bappa! 🙏"
+    )
+
+st.markdown(
+    f"""
+    <div class="counter">
+        🌸 {st.session_state.flowers} Flowers
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# FEATURE 5
+# FESTIVAL GREETING
+# =========================================================
+
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
 
 st.subheader("🎉 Festival Greeting")
 
 greetings = [
+
     "Happy Ganesh Chaturthi! 🙏",
 
     "Ganpati Bappa Morya! 🌺",
@@ -413,112 +856,77 @@ greetings = [
     "Wishing you peace, prosperity and happiness! ✨",
 
     "May every new beginning be blessed by Lord Ganesha! 🌸"
+
 ]
 
 selected_greeting = st.selectbox(
-    "Choose Greeting",
-    greetings
+    "Choose your greeting",
+    greetings,
+    key="greeting_select"
 )
 
-st.info(selected_greeting)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-# =========================================================
-# FEATURE 5 - FLOWER CELEBRATION
-# =========================================================
-
-st.markdown('<div class="card">', unsafe_allow_html=True)
-
-st.subheader("🌸 Flower Celebration")
-
-if st.button(
-    "🌺 Offer Flowers to Bappa",
-    use_container_width=True
-):
-
-    st.session_state.flower_count += 1
-
-    st.balloons()
+st.info(
+    selected_greeting
+)
 
 st.markdown(
-    f"""
-    <div class="small-note">
-        🌸 Flowers offered: {st.session_state.flower_count}
-    </div>
-    """,
+    '</div>',
     unsafe_allow_html=True
 )
 
-st.markdown('</div>', unsafe_allow_html=True)
-
 
 # =========================================================
-# FEATURE 6 - WELCOME MESSAGE
+# FEATURE 6
+# ABOUT GANESH CHATURTHI
 # =========================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
-
-st.subheader("🪔 Bappa Welcome")
-
-if st.button(
-    "🙏 Welcome Bappa",
-    use_container_width=True
-):
-
-    st.session_state.show_welcome = True
-
-if st.session_state.show_welcome:
-
-    st.success(
-        "🌺 गणपति बप्पा मोरया! 🌺\n\n"
-        "Welcome Lord Ganesha with devotion, "
-        "peace and happiness. 🙏"
-    )
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-# =========================================================
-# FEATURE 7 - FESTIVAL INFORMATION
-# =========================================================
-
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
 
 with st.expander("📖 About Ganesh Chaturthi"):
 
     st.write(
         "Ganesh Chaturthi is a festival dedicated to "
-        "Lord Ganesha. Devotees worship Ganesha as the "
-        "remover of obstacles and the symbol of wisdom "
-        "and new beginnings."
+        "Lord Ganesha, who is traditionally worshipped "
+        "as the remover of obstacles and a symbol of "
+        "wisdom and auspicious beginnings."
     )
 
     st.write(
         "🙏 गणपति बप्पा मोरया 🙏"
     )
 
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-# =========================================================
-# FEATURE 8 - SHARE MESSAGE
-# =========================================================
-
-st.markdown('<div class="card">', unsafe_allow_html=True)
-
-st.subheader("📱 Share Message")
-
-share_text = (
-    "🙏 Happy Ganesh Chaturthi 2026! 🙏\n\n"
-    "May Lord Ganesha bless you and your family "
-    "with happiness, peace, prosperity and success.\n\n"
-    "🌺 Ganpati Bappa Morya! 🌺"
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
 )
 
+
+# =========================================================
+# FEATURE 7
+# SHARE MESSAGE
+# =========================================================
+
+st.markdown(
+    '<div class="section-card">',
+    unsafe_allow_html=True
+)
+
+st.subheader("📱 Share Bappa's Message")
+
+share_message = """
+🙏 Happy Ganesh Chaturthi 2026! 🙏
+
+May Lord Ganesha bless you and your family
+with happiness, peace, prosperity and success.
+
+🌺 Ganpati Bappa Morya! 🌺
+"""
+
 st.code(
-    share_text,
+    share_message,
     language=None
 )
 
@@ -526,20 +934,23 @@ st.caption(
     "Copy this message and share it with your family and friends."
 )
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown(
+    '</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================================================
-# FOOTER
+# FINAL MESSAGE
 # =========================================================
 
 st.markdown(
     """
     <div class="footer-main">
-        Ganpati Bappa Morya 🙏
+        🌺 Ganpati Bappa Morya 🙏
     </div>
 
-    <div class="footer-sub">
+    <div class="footer-credit">
         Developed by Rashpreet Kaur Arora | BCA 2nd Year
     </div>
     """,
