@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import os
 import random
+import time
 
 # =========================================================
 # HAPPY GANESH CHATURTHI 2026
@@ -11,579 +12,233 @@ import random
 st.set_page_config(
     page_title="Happy Ganesh Chaturthi 2026",
     page_icon="🙏",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 # =========================================================
 # SESSION STATE
 # =========================================================
 
-if "blessing" not in st.session_state:
-    st.session_state.blessing = 0
-
 if "count" not in st.session_state:
     st.session_state.count = 0
 
-if "animation" not in st.session_state:
-    st.session_state.animation = True
+if "blessing" not in st.session_state:
+    st.session_state.blessing = (
+        "🙏 May Bappa bless you with happiness, peace and success. 🙏"
+    )
+
+if "show_welcome" not in st.session_state:
+    st.session_state.show_welcome = False
+
+if "flower_count" not in st.session_state:
+    st.session_state.flower_count = 0
 
 
-# =========================================================
-# THEME SETTINGS
-# =========================================================
-
-theme = st.selectbox(
-    "🎨 Choose Theme",
-    [
-        "Royal Gold",
-        "Divine Pink",
-        "Temple Blue",
-        "Festive Orange"
-    ]
-)
-
-themes = {
-
-    "Royal Gold": {
-        "top": "#070914",
-        "middle": "#18172c",
-        "bottom": "#080a12",
-        "gold": "#ffd45c",
-        "accent": "#ffb52e"
-    },
-
-    "Divine Pink": {
-        "top": "#170914",
-        "middle": "#301426",
-        "bottom": "#10070d",
-        "gold": "#ffd0dc",
-        "accent": "#ff8eae"
-    },
-
-    "Temple Blue": {
-        "top": "#050b18",
-        "middle": "#101f3d",
-        "bottom": "#050914",
-        "gold": "#b9dcff",
-        "accent": "#66b7ff"
-    },
-
-    "Festive Orange": {
-        "top": "#160b05",
-        "middle": "#32170b",
-        "bottom": "#0e0703",
-        "gold": "#ffd08a",
-        "accent": "#ff8c32"
-    }
-}
-
-current = themes[theme]
-
-
-# =========================================================
-# ANIMATION CONTROL
-# =========================================================
-
-st.session_state.animation = st.toggle(
-    "✨ Enable Animation",
-    value=st.session_state.animation
-)
 # =========================================================
 # CSS
 # =========================================================
 
-st.markdown(
-    f"""
+st.markdown("""
 <style>
 
-* {{
-    box-sizing: border-box;
-}}
-
-.stApp {{
-
-    min-height: 100vh;
-
+.stApp {
     background:
         radial-gradient(
-            circle at 50% 18%,
-            rgba(255,190,60,0.24),
-            transparent 28%
+            circle at 50% 10%,
+            rgba(255,190,60,0.25),
+            transparent 30%
         ),
-
         linear-gradient(
             180deg,
-            {current["top"]} 0%,
-            {current["middle"]} 50%,
-            {current["bottom"]} 100%
+            #080713 0%,
+            #21142b 48%,
+            #090812 100%
         );
 
     color: white;
-}}
+}
 
-
-/* =====================================================
-   PHONE WIDTH
-   ===================================================== */
-
-.block-container {{
-
-    max-width: 520px !important;
-
+.block-container {
+    max-width: 500px !important;
     padding-top: 18px !important;
-
-    padding-left: 13px !important;
-
-    padding-right: 13px !important;
-
+    padding-left: 12px !important;
+    padding-right: 12px !important;
     padding-bottom: 30px !important;
+}
 
-    margin: auto;
-}}
-
-
-/* =====================================================
-   TITLE
-   ===================================================== */
-
-.title {{
-
+.hero {
     text-align: center;
+    padding: 8px 5px 14px 5px;
+}
 
-    color: {current["gold"]};
-
-    font-size: clamp(29px, 8vw, 41px);
-
+.hero-title {
+    color: #ffd45c;
+    font-size: clamp(29px, 8vw, 42px);
     font-weight: 900;
-
-    line-height: 1.12;
-
-    margin-bottom: 5px;
-
+    line-height: 1.15;
     text-shadow:
-        0 0 10px rgba(255,200,70,0.35),
-        0 0 25px rgba(255,160,30,0.20);
-}}
-/* =====================================================
-   YEAR
-   ===================================================== */
+        0 0 8px rgba(255,200,70,.45),
+        0 0 25px rgba(255,150,30,.20);
+}
 
-.year {{
-
-    text-align: center;
-
-    color: {current["accent"]};
-
-    font-size: 40px;
-
+.hero-year {
+    color: #ffad32;
+    font-size: 38px;
     font-weight: 900;
+    margin-top: 2px;
+}
 
-    line-height: 1;
+.hero-subtitle {
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-top: 8px;
+}
 
-    margin-bottom: 12px;
-}}
-
-
-/* =====================================================
-   BLESSING
-   ===================================================== */
-
-.blessing {{
-
+.gold-line {
     text-align: center;
+    color: #ffd45c;
+    font-size: 21px;
+    letter-spacing: 8px;
+    margin: 5px 0 14px 0;
+}
 
-    color: white;
-
-    font-size: 17px;
-
-    line-height: 1.45;
-
-    padding: 0 10px;
-
-    margin-bottom: 13px;
-}}
-
-
-/* =====================================================
-   DECORATION
-   ===================================================== */
-
-.decor {{
-
-    text-align: center;
-
-    color: {current["gold"]};
-
-    font-size: 20px;
-
-    letter-spacing: 7px;
-
-    margin-bottom: 12px;
-}}
-
-
-/* =====================================================
-   IMAGE CARD
-   ===================================================== */
-
-.image-card {{
-
-    width: 100%;
-
-    max-width: 440px;
-
-    margin: auto;
-
+.image-box {
     padding: 8px;
-
     border-radius: 25px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(255,255,255,0.10),
-            rgba(255,255,255,0.025)
+            rgba(255,205,90,.18),
+            rgba(255,255,255,.03)
         );
 
-    border: 2px solid rgba(255,200,80,0.55);
+    border: 2px solid rgba(255,205,90,.55);
 
     box-shadow:
-        0 0 20px rgba(255,180,40,0.20),
-        0 0 55px rgba(255,150,30,0.10);
-}}
+        0 0 20px rgba(255,180,40,.22),
+        0 0 50px rgba(255,140,20,.10);
+}
 
-
-/* =====================================================
-   IMAGE
-   ===================================================== */
-
-.image-card img {{
-
-    width: 100% !important;
-
-    max-height: 430px !important;
-
-    object-fit: contain !important;
-
+.image-box img {
     border-radius: 18px !important;
+}
 
-    display: block;
-
-    margin: auto;
-}}
-
-
-/* =====================================================
-   DIYAS
-   ===================================================== */
-
-.diyas {{
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 45px;
-
-    margin-top: 12px;
-
-    margin-bottom: 10px;
-}}
-
-.diya {{
-
-    font-size: 27px;
-
-    animation:
-        diyaGlow 1.5s ease-in-out infinite alternate;
-}}
-
-@keyframes diyaGlow {{
-
-    from {{
-        transform: scale(0.90);
-        filter: brightness(0.9);
-    }}
-
-    to {{
-        transform: scale(1.18);
-        filter: brightness(1.5);
-    }}
-}}
-
-
-/* =====================================================
-   MANTRA
-   ===================================================== */
-
-.mantra {{
-
+.diya-row {
     text-align: center;
+    font-size: 28px;
+    margin: 13px 0;
+    letter-spacing: 22px;
+}
 
-    color: #ffe4a5;
-
-    font-size: 18px;
-
-    font-weight: 700;
-
-    margin: 10px 0 16px 0;
-}}
-
-
-/* =====================================================
-   SECTION CARD
-   ===================================================== */
-
-.section-card {{
-
-    padding: 14px;
-
-    margin-top: 12px;
-
+.card {
+    background: rgba(255,255,255,.055);
+    border: 1px solid rgba(255,205,90,.20);
     border-radius: 18px;
-
-    background: rgba(255,255,255,0.045);
-
-    border: 1px solid rgba(255,205,90,0.18);
-}}
-
-
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
-.morya {{
-
-    text-align: center;
-
-    color: {current["accent"]};
-
-    font-size: 21px;
-
-    font-weight: 900;
-
-    margin-top: 20px;
-}}
-
-.credit {{
-
-    text-align: center;
-
-    color: #9a9ca8;
-
-    font-size: 12px;
-
+    padding: 15px;
     margin-top: 12px;
-}}
+}
 
+.mantra-display {
+    text-align: center;
+    color: #ffe5aa;
+    font-size: 20px;
+    font-weight: 800;
+    padding: 10px;
+}
 
-/* =====================================================
-   MOBILE
-   ===================================================== */
+.counter {
+    text-align: center;
+    color: #ffd45c;
+    font-size: 28px;
+    font-weight: 900;
+    margin: 8px;
+}
 
-@media (max-width:400px) {{
+.footer-main {
+    text-align: center;
+    color: #ffb52e;
+    font-size: 21px;
+    font-weight: 900;
+    margin-top: 22px;
+}
 
-    .block-container {{
+.footer-sub {
+    text-align: center;
+    color: #9294a2;
+    font-size: 12px;
+    margin-top: 8px;
+}
 
-        padding-left: 10px !important;
-
-        padding-right: 10px !important;
-    }}
-
-    .title {{
-        font-size: 29px;
-    }}
-
-    .year {{
-        font-size: 37px;
-    }}
-
-    .blessing {{
-        font-size: 16px;
-    }}
-
-    .image-card {{
-        padding: 7px;
-    }}
-
-    .image-card img {{
-        max-height: 390px !important;
-    }}
-
-    .mantra {{
-        font-size: 16px;
-    }}
-
-}}
-
-
-/* =====================================================
-   HIDE DEFAULT STREAMLIT UI
-   ===================================================== */
-
-#MainMenu {{
-    visibility: hidden;
-}}
-
-footer {{
-    visibility: hidden;
-}}
-
-header {{
-    visibility: hidden;
-}}
+.small-note {
+    text-align: center;
+    color: #c5c5ca;
+    font-size: 13px;
+    margin-top: 8px;
+}
 
 </style>
-""",
-    unsafe_allow_html=True
-)
-# =========================================================
-# FLOATING PARTICLES
-# =========================================================
-
-if st.session_state.animation:
-
-    st.markdown(
-        """
-        <div style="
-            position:fixed;
-            inset:0;
-            pointer-events:none;
-            overflow:hidden;
-            z-index:0;
-        ">
-
-        <div style="
-            position:absolute;
-            left:8%;
-            bottom:-20px;
-            color:#ffd45c;
-            font-size:16px;
-            animation: float1 7s linear infinite;
-        ">✦</div>
-
-        <div style="
-            position:absolute;
-            left:25%;
-            bottom:-20px;
-            color:#ffd45c;
-            font-size:13px;
-            animation: float2 8s linear infinite;
-        ">✧</div>
-
-        <div style="
-            position:absolute;
-            left:45%;
-            bottom:-20px;
-            color:#ffd45c;
-            font-size:17px;
-            animation: float1 9s linear infinite;
-        ">•</div>
-
-        <div style="
-            position:absolute;
-            left:65%;
-            bottom:-20px;
-            color:#ffd45c;
-            font-size:15px;
-            animation: float2 7s linear infinite;
-        ">✦</div>
-
-        <div style="
-            position:absolute;
-            left:87%;
-            bottom:-20px;
-            color:#ffd45c;
-            font-size:14px;
-            animation: float1 8s linear infinite;
-        ">✧</div>
-
-        </div>
-
-        <style>
-
-        @keyframes float1 {
-
-            0% {
-                transform:translateY(0);
-                opacity:0;
-            }
-
-            20% {
-                opacity:0.8;
-            }
-
-            100% {
-                transform:translateY(-105vh);
-                opacity:0;
-            }
-        }
-
-        @keyframes float2 {
-
-            0% {
-                transform:translateY(0) rotate(0deg);
-                opacity:0;
-            }
-
-            20% {
-                opacity:0.8;
-            }
-
-            100% {
-                transform:translateY(-105vh) rotate(180deg);
-                opacity:0;
-            }
-        }
-
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+""", unsafe_allow_html=True)
 
 
 # =========================================================
-# MAIN TITLE
+# HERO
 # =========================================================
 
-st.markdown(
-    '<div class="title">Happy Ganesh Chaturthi</div>',
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="hero">
 
-st.markdown(
-    '<div class="year">2026</div>',
-    unsafe_allow_html=True
-)
+    <div class="hero-title">
+        ✨ Happy Ganesh Chaturthi ✨
+    </div>
 
-st.markdown(
-    '<div class="blessing">'
-    '🙏 May Bappa bless you with joy &amp; peace 🙏'
-    '</div>',
-    unsafe_allow_html=True
-)
+    <div class="hero-year">
+        2026
+    </div>
 
-st.markdown(
-    '<div class="decor">✦ ✦ ✦</div>',
-    unsafe_allow_html=True
-)
+    <div class="hero-subtitle">
+        🙏 May Bappa bless you with joy, peace & prosperity 🙏
+    </div>
+
+</div>
+
+<div class="gold-line">
+    ✦ ✦ ✦
+</div>
+""", unsafe_allow_html=True)
+
+
 # =========================================================
 # GANESH IMAGE
 # =========================================================
 
-image_path = "file_00000000a74482098265ae866f1a87d0.png"
+# IMPORTANT:
+# Put your actual image file in the SAME GitHub folder
+# as bappa.py.
 
-if os.path.exists(image_path):
+possible_images = [
+    "GaneshJi.png",
+    "GaneshJi.jpg",
+    "file_00000000a74482098265ae866f1a87d0.png"
+]
+
+image_path = None
+
+for filename in possible_images:
+    if os.path.exists(filename):
+        image_path = filename
+        break
+
+if image_path:
 
     try:
 
         img = Image.open(image_path)
 
-        if img.mode not in ("RGB", "RGBA"):
-            img = img.convert("RGB")
-
         st.markdown(
-            '<div class="image-card">',
+            '<div class="image-box">',
             unsafe_allow_html=True
         )
 
@@ -597,16 +252,15 @@ if os.path.exists(image_path):
             unsafe_allow_html=True
         )
 
-    except Exception as e:
+    except Exception:
 
         st.error("Ganesh Ji image could not be opened.")
 
 else:
 
-    st.error("Ganesh Ji image not found.")
-
-    st.info(
-        "Make sure the PNG file is in the same GitHub folder as bappa.py."
+    st.warning(
+        "Ganesh Ji image is not found. "
+        "Add GaneshJi.png or GaneshJi.jpg to your GitHub repository."
     )
 
 
@@ -616,14 +270,8 @@ else:
 
 st.markdown(
     """
-    <div class="diyas">
-
-        <div class="diya">🪔</div>
-
-        <div class="diya">🪔</div>
-
-        <div class="diya">🪔</div>
-
+    <div class="diya-row">
+        🪔 🪔 🪔
     </div>
     """,
     unsafe_allow_html=True
@@ -631,45 +279,76 @@ st.markdown(
 
 
 # =========================================================
-# MANTRA SELECTOR
+# FEATURE 1 - DAILY BLESSING
 # =========================================================
 
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("🙏 Bappa's Blessing")
+
+blessings = [
+    "🙏 May Bappa remove every obstacle from your path. 🙏",
+
+    "🌸 May your life be filled with happiness and peace. 🌸",
+
+    "✨ May Lord Ganesha bless your new beginnings. ✨",
+
+    "🪔 May your home be filled with prosperity and positivity. 🪔",
+
+    "🌺 May Bappa give you wisdom, strength and success. 🌺",
+
+    "🙏 May every difficulty become easier with Bappa's blessings. 🙏"
+]
+
+if st.button(
+    "✨ Get New Blessing",
+    use_container_width=True
+):
+
+    st.session_state.blessing = random.choice(blessings)
+
+st.success(st.session_state.blessing)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =========================================================
+# FEATURE 2 - MANTRA
+# =========================================================
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
 st.subheader("🕉️ Divine Mantra")
 
-mantra = st.selectbox(
-    "Choose a mantra",
-    [
-        "ॐ गं गणपतये नमः",
-        "गणपति बप्पा मोरया",
-        "ॐ श्री गणेशाय नमः",
-        "वक्रतुण्ड महाकाय"
-    ]
+mantras = [
+    "ॐ गं गणपतये नमः",
+    "ॐ श्री गणेशाय नमः",
+    "गणपति बप्पा मोरया",
+    "वक्रतुण्ड महाकाय"
+]
+
+selected_mantra = st.selectbox(
+    "Select Mantra",
+    mantras
 )
 
 st.markdown(
-    f'<div class="mantra">{mantra}</div>',
+    f"""
+    <div class="mantra-display">
+        {selected_mantra}
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =========================================================
-# 108 MANTRA COUNTER
+# FEATURE 3 - 108 MANTRA COUNTER
 # =========================================================
 
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
 st.subheader("🔢 108 Mantra Counter")
 
@@ -677,120 +356,177 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    if st.button("🙏 Chant +1", use_container_width=True):
+    if st.button(
+        "🙏 Chant +1",
+        use_container_width=True
+    ):
 
         if st.session_state.count < 108:
-
             st.session_state.count += 1
-
-        else:
-
-            st.session_state.count = 108
-
 
 with col2:
 
-    if st.button("🔄 Reset", use_container_width=True):
+    if st.button(
+        "🔄 Reset",
+        use_container_width=True
+    ):
 
         st.session_state.count = 0
 
-
-st.progress(
-    st.session_state.count / 108
-)
-
 st.markdown(
     f"""
-    <div style="
-        text-align:center;
-        color:{current["gold"]};
-        font-size:25px;
-        font-weight:800;
-        margin-top:8px;
-    ">
+    <div class="counter">
         {st.session_state.count} / 108
     </div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
+st.progress(
+    st.session_state.count / 108
 )
+
+if st.session_state.count == 108:
+
+    st.success(
+        "🌺 108 Mantra Complete! Ganpati Bappa Morya! 🙏"
+    )
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
 # =========================================================
-# BLESSING MESSAGES
+# FEATURE 4 - FESTIVAL GREETING
 # =========================================================
 
-blessings = [
+st.markdown('<div class="card">', unsafe_allow_html=True)
 
-    "🙏 May Lord Ganesha remove every obstacle and fill your life with happiness, peace and success. 🙏",
+st.subheader("🎉 Festival Greeting")
 
-    "🌸 May Bappa bring wisdom, prosperity and positivity into your life. 🌸",
+greetings = [
+    "Happy Ganesh Chaturthi! 🙏",
 
-    "✨ May every new beginning be blessed by Lord Ganesha. ✨",
+    "Ganpati Bappa Morya! 🌺",
 
-    "🪔 May your home be filled with peace, love and divine blessings. 🪔",
+    "May Bappa bless your family! 🪔",
 
-    "🙏 May Ganpati Bappa guide you towards success and happiness. 🙏"
+    "Wishing you peace, prosperity and happiness! ✨",
+
+    "May every new beginning be blessed by Lord Ganesha! 🌸"
 ]
 
-
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
+selected_greeting = st.selectbox(
+    "Choose Greeting",
+    greetings
 )
 
-st.subheader("🙏 Bappa's Blessings")
+st.info(selected_greeting)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =========================================================
+# FEATURE 5 - FLOWER CELEBRATION
+# =========================================================
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("🌸 Flower Celebration")
 
 if st.button(
-    "✨ Receive New Blessing",
+    "🌺 Offer Flowers to Bappa",
     use_container_width=True
 ):
 
-    st.session_state.blessing = random.randint(
-        0,
-        len(blessings) - 1
+    st.session_state.flower_count += 1
+
+    st.balloons()
+
+st.markdown(
+    f"""
+    <div class="small-note">
+        🌸 Flowers offered: {st.session_state.flower_count}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =========================================================
+# FEATURE 6 - WELCOME MESSAGE
+# =========================================================
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("🪔 Bappa Welcome")
+
+if st.button(
+    "🙏 Welcome Bappa",
+    use_container_width=True
+):
+
+    st.session_state.show_welcome = True
+
+if st.session_state.show_welcome:
+
+    st.success(
+        "🌺 गणपति बप्पा मोरया! 🌺\n\n"
+        "Welcome Lord Ganesha with devotion, "
+        "peace and happiness. 🙏"
     )
 
-st.success(
-    blessings[st.session_state.blessing]
-)
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =========================================================
-# FESTIVAL MESSAGE
+# FEATURE 7 - FESTIVAL INFORMATION
 # =========================================================
 
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+with st.expander("📖 About Ganesh Chaturthi"):
+
+    st.write(
+        "Ganesh Chaturthi is a festival dedicated to "
+        "Lord Ganesha. Devotees worship Ganesha as the "
+        "remover of obstacles and the symbol of wisdom "
+        "and new beginnings."
+    )
+
+    st.write(
+        "🙏 गणपति बप्पा मोरया 🙏"
+    )
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =========================================================
+# FEATURE 8 - SHARE MESSAGE
+# =========================================================
+
+st.markdown('<div class="card">', unsafe_allow_html=True)
+
+st.subheader("📱 Share Message")
+
+share_text = (
+    "🙏 Happy Ganesh Chaturthi 2026! 🙏\n\n"
+    "May Lord Ganesha bless you and your family "
+    "with happiness, peace, prosperity and success.\n\n"
+    "🌺 Ganpati Bappa Morya! 🌺"
 )
 
-st.subheader("🎉 Festival Message")
-
-message = st.selectbox(
-    "Choose message",
-    [
-        "Happy Ganesh Chaturthi! 🙏",
-        "Ganpati Bappa Morya! 🌺",
-        "May Bappa bless your family! 🪔",
-        "Wishing you peace and prosperity! ✨",
-        "Celebrate with devotion and happiness! 🌸"
-    ]
+st.code(
+    share_text,
+    language=None
 )
 
-st.info(message)
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
+st.caption(
+    "Copy this message and share it with your family and friends."
 )
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =========================================================
@@ -798,15 +534,14 @@ st.markdown(
 # =========================================================
 
 st.markdown(
-    '<div class="morya">'
-    'Ganpati Bappa Morya 🙏'
-    '</div>',
-    unsafe_allow_html=True
-)
+    """
+    <div class="footer-main">
+        Ganpati Bappa Morya 🙏
+    </div>
 
-st.markdown(
-    '<div class="credit">'
-    'Developed by Rashpreet Kaur Arora | BCA 2nd Year'
-    '</div>',
+    <div class="footer-sub">
+        Developed by Rashpreet Kaur Arora | BCA 2nd Year
+    </div>
+    """,
     unsafe_allow_html=True
 )
