@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import os
-import base64
 
 # =========================================================
 # HAPPY GANESH CHATURTHI 2026
@@ -16,7 +15,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# BACKGROUND + DESIGN
+# BEAUTIFUL PHONE DESIGN
 # =========================================================
 
 st.markdown("""
@@ -31,29 +30,26 @@ st.markdown("""
 
     background:
         radial-gradient(
-            circle at 50% 20%,
-            rgba(255, 190, 60, 0.22),
-            transparent 25%
+            circle at 50% 18%,
+            rgba(255, 190, 55, 0.25),
+            transparent 28%
         ),
         radial-gradient(
-            circle at 20% 70%,
-            rgba(180, 70, 120, 0.12),
+            circle at 10% 75%,
+            rgba(255, 100, 150, 0.12),
             transparent 25%
         ),
         linear-gradient(
             180deg,
             #070914 0%,
-            #15172b 48%,
+            #17182d 48%,
             #080a12 100%
         );
 
     color: white;
 }
 
-/* PHONE CONTAINER */
-
 .block-container {
-    width: 100%;
     max-width: 520px !important;
 
     padding-top: 18px !important;
@@ -64,15 +60,19 @@ st.markdown("""
     margin: auto;
 }
 
-/* =======================================================
-   FLOATING PARTICLES
-   ======================================================= */
+/* =========================================================
+   FLOATING GOLDEN PARTICLES
+   ========================================================= */
 
 .particles {
     position: fixed;
-    inset: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 
     pointer-events: none;
+
     overflow: hidden;
 
     z-index: 0;
@@ -82,24 +82,54 @@ st.markdown("""
     position: absolute;
 
     color: #ffd45c;
-    font-size: 14px;
 
-    opacity: 0.75;
+    font-size: 15px;
 
-    animation: floatUp 7s linear infinite;
+    animation: floatUp 8s linear infinite;
+
+    opacity: 0;
 }
 
-.p1 { left: 8%;  bottom: -20px; animation-delay: 0s; }
-.p2 { left: 22%; bottom: -20px; animation-delay: 1.2s; }
-.p3 { left: 38%; bottom: -20px; animation-delay: 2.4s; }
-.p4 { left: 55%; bottom: -20px; animation-delay: 3.2s; }
-.p5 { left: 72%; bottom: -20px; animation-delay: 1.7s; }
-.p6 { left: 88%; bottom: -20px; animation-delay: 4s; }
+.p1 {
+    left: 8%;
+    bottom: -20px;
+    animation-delay: 0s;
+}
+
+.p2 {
+    left: 23%;
+    bottom: -20px;
+    animation-delay: 1.5s;
+}
+
+.p3 {
+    left: 39%;
+    bottom: -20px;
+    animation-delay: 3s;
+}
+
+.p4 {
+    left: 55%;
+    bottom: -20px;
+    animation-delay: 2s;
+}
+
+.p5 {
+    left: 72%;
+    bottom: -20px;
+    animation-delay: 4s;
+}
+
+.p6 {
+    left: 89%;
+    bottom: -20px;
+    animation-delay: 5s;
+}
 
 @keyframes floatUp {
 
     0% {
-        transform: translateY(0) scale(0.7);
+        transform: translateY(0) scale(0.6);
         opacity: 0;
     }
 
@@ -117,9 +147,9 @@ st.markdown("""
     }
 }
 
-/* =======================================================
+/* =========================================================
    TITLE
-   ======================================================= */
+   ========================================================= */
 
 .title {
     position: relative;
@@ -127,25 +157,25 @@ st.markdown("""
 
     text-align: center;
 
-    color: #ffd35a;
+    color: #ffd45c;
 
-    font-size: clamp(28px, 8vw, 42px);
+    font-size: clamp(28px, 8vw, 40px);
 
     font-weight: 800;
 
-    line-height: 1.12;
+    line-height: 1.15;
 
     margin-top: 5px;
     margin-bottom: 6px;
 
     text-shadow:
-        0 0 8px rgba(255, 200, 70, 0.30),
-        0 0 22px rgba(255, 160, 30, 0.15);
+        0 0 10px rgba(255, 195, 60, 0.35),
+        0 0 25px rgba(255, 160, 30, 0.18);
 }
 
-/* =======================================================
+/* =========================================================
    YEAR
-   ======================================================= */
+   ========================================================= */
 
 .year {
     position: relative;
@@ -155,18 +185,18 @@ st.markdown("""
 
     color: #ffb52e;
 
-    font-size: 42px;
+    font-size: 40px;
 
     font-weight: 800;
 
     line-height: 1;
 
-    margin-bottom: 13px;
+    margin-bottom: 12px;
 }
 
-/* =======================================================
+/* =========================================================
    BLESSING
-   ======================================================= */
+   ========================================================= */
 
 .blessing {
     position: relative;
@@ -176,18 +206,18 @@ st.markdown("""
 
     color: #ffffff;
 
-    font-size: 18px;
+    font-size: 17px;
 
-    line-height: 1.4;
+    line-height: 1.45;
 
-    margin: 0 auto 18px auto;
+    padding: 0 12px;
 
-    padding: 0 10px;
+    margin-bottom: 14px;
 }
 
-/* =======================================================
+/* =========================================================
    DECORATION
-   ======================================================= */
+   ========================================================= */
 
 .decor {
     position: relative;
@@ -195,18 +225,18 @@ st.markdown("""
 
     text-align: center;
 
-    color: #ffca4d;
+    color: #ffd05a;
 
-    font-size: 20px;
+    font-size: 18px;
 
-    letter-spacing: 8px;
+    letter-spacing: 7px;
 
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
-/* =======================================================
-   GANESH IMAGE CARD
-   ======================================================= */
+/* =========================================================
+   IMAGE CARD
+   ========================================================= */
 
 .image-card {
     position: relative;
@@ -214,72 +244,75 @@ st.markdown("""
 
     width: 100%;
 
-    max-width: 460px;
+    max-width: 440px;
 
-    margin: auto;
+    margin: 0 auto;
 
-    padding: 9px;
+    padding: 8px;
 
     border-radius: 24px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.09),
             rgba(255,255,255,0.025)
         );
 
-    border: 2px solid rgba(255, 196, 65, 0.55);
+    border: 2px solid rgba(255, 195, 60, 0.55);
 
     box-shadow:
-        0 0 18px rgba(255, 180, 40, 0.16),
-        0 0 45px rgba(255, 150, 30, 0.08);
-
-    overflow: hidden;
+        0 0 20px rgba(255, 180, 40, 0.18),
+        0 0 55px rgba(255, 150, 30, 0.08);
 }
 
-/* =======================================================
-   IMAGE
-   ======================================================= */
+/* =========================================================
+   STREAMLIT IMAGE CONTAINER
+   ========================================================= */
 
-.ganesh-image {
-    display: block;
-
+.image-card [data-testid="stImage"] {
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
 
-    max-height: 430px;
+.image-card [data-testid="stImage"] img {
+    width: 100% !important;
 
-    object-fit: contain;
+    max-height: 430px !important;
 
-    border-radius: 17px;
+    object-fit: contain !important;
+
+    border-radius: 17px !important;
+
+    display: block;
 
     margin: auto;
 }
 
-/* =======================================================
-   DIYA EFFECT
-   ======================================================= */
+/* =========================================================
+   DIYAS
+   ========================================================= */
 
 .diyas {
     position: relative;
-
     z-index: 2;
 
     display: flex;
 
     justify-content: center;
 
-    gap: 35px;
+    gap: 42px;
 
-    margin-top: 12px;
+    margin-top: 13px;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .diya {
-    font-size: 24px;
+    font-size: 25px;
 
-    animation: diyaGlow 1.8s ease-in-out infinite alternate;
+    animation: diyaGlow 1.7s ease-in-out infinite alternate;
 }
 
 .diya:nth-child(2) {
@@ -294,14 +327,14 @@ st.markdown("""
     }
 
     to {
-        transform: scale(1.12);
+        transform: scale(1.15);
         filter: brightness(1.4);
     }
 }
 
-/* =======================================================
+/* =========================================================
    MANTRA
-   ======================================================= */
+   ========================================================= */
 
 .mantra {
     position: relative;
@@ -309,22 +342,20 @@ st.markdown("""
 
     text-align: center;
 
-    color: #ffe2a0;
+    color: #ffe4a5;
 
-    font-size: 16px;
+    font-size: 17px;
 
     font-weight: 600;
 
     line-height: 1.5;
 
     margin-top: 8px;
-
-    padding: 0 10px;
 }
 
-/* =======================================================
-   BUTTON AREA
-   ======================================================= */
+/* =========================================================
+   BUTTON TITLE
+   ========================================================= */
 
 .button-title {
     position: relative;
@@ -338,12 +369,14 @@ st.markdown("""
 
     font-weight: 700;
 
-    margin-top: 18px;
+    margin-top: 17px;
 
     margin-bottom: 8px;
 }
 
-/* Streamlit buttons */
+/* =========================================================
+   BUTTON
+   ========================================================= */
 
 .stButton > button {
 
@@ -353,7 +386,7 @@ st.markdown("""
 
     border-radius: 14px;
 
-    border: 1px solid rgba(255, 200, 80, 0.5);
+    border: 1px solid rgba(255, 205, 90, 0.55);
 
     background:
         linear-gradient(
@@ -369,21 +402,19 @@ st.markdown("""
     font-weight: 700;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,0.25);
+        0 5px 18px rgba(0,0,0,0.28);
 }
 
 .stButton > button:hover {
 
-    border-color: #ffd15a;
+    border-color: #ffd45c;
 
     color: white;
-
-    transform: translateY(-1px);
 }
 
-/* =======================================================
+/* =========================================================
    FOOTER
-   ======================================================= */
+   ========================================================= */
 
 .morya {
     position: relative;
@@ -410,18 +441,18 @@ st.markdown("""
 
     font-size: 12px;
 
-    margin-top: 14px;
+    margin-top: 13px;
 }
 
-/* =======================================================
+/* =========================================================
    MOBILE
-   ======================================================= */
+   ========================================================= */
 
 @media (max-width: 400px) {
 
     .block-container {
-        padding-left: 11px !important;
-        padding-right: 11px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
     }
 
     .title {
@@ -429,11 +460,11 @@ st.markdown("""
     }
 
     .year {
-        font-size: 38px;
+        font-size: 37px;
     }
 
     .blessing {
-        font-size: 17px;
+        font-size: 16px;
     }
 
     .image-card {
@@ -441,8 +472,8 @@ st.markdown("""
         border-radius: 20px;
     }
 
-    .ganesh-image {
-        max-height: 390px;
+    .image-card [data-testid="stImage"] img {
+        max-height: 390px !important;
     }
 
     .mantra {
@@ -452,8 +483,9 @@ st.markdown("""
     .morya {
         font-size: 18px;
     }
-
 }
+
+/* Hide Streamlit default elements */
 
 #MainMenu {
     visibility: hidden;
@@ -465,7 +497,6 @@ footer {
 
 header {
     visibility: hidden;
-
 }
 
 </style>
@@ -518,10 +549,14 @@ st.markdown(
 
 
 # =========================================================
-# IMAGE
+# GANESH JI IMAGE
 # =========================================================
 
-image_path = "GaneshJi.png"
+# IMPORTANT:
+# This is your CURRENT GitHub filename.
+
+image_path = "file_00000000a74482098265ae866f1a87d0.png"
+
 
 if os.path.exists(image_path):
 
@@ -529,7 +564,6 @@ if os.path.exists(image_path):
 
         img = Image.open(image_path)
 
-        # Convert unusual image modes safely
         if img.mode not in ("RGB", "RGBA"):
             img = img.convert("RGB")
 
@@ -548,20 +582,20 @@ if os.path.exists(image_path):
             unsafe_allow_html=True
         )
 
-    except Exception as error:
+    except Exception:
 
         st.error(
-            "GaneshJi.png could not be opened."
+            "Ganesh Ji image could not be opened."
         )
 
 else:
 
     st.error(
-        "GaneshJi.png not found."
+        "Ganesh Ji image not found."
     )
 
     st.info(
-        "Put GaneshJi.png in the same GitHub folder as bappa.py."
+        "Make sure the PNG file is in the same GitHub folder as bappa.py."
     )
 
 
@@ -573,6 +607,7 @@ st.markdown("""
 <div class="diyas">
 
 <div class="diya">🪔</div>
+
 <div class="diya">🪔</div>
 
 </div>
@@ -592,11 +627,13 @@ st.markdown(
 
 
 # =========================================================
-# INTERACTIVE BUTTON
+# BLESSING BUTTON
 # =========================================================
 
 st.markdown(
-    '<div class="button-title">🙏 Send Bappa\'s Blessings</div>',
+    '<div class="button-title">'
+    '🙏 Send Bappa\'s Blessings'
+    '</div>',
     unsafe_allow_html=True
 )
 
@@ -613,7 +650,9 @@ if st.button("✨ Receive Blessing"):
 # =========================================================
 
 st.markdown(
-    '<div class="morya">Ganpati Bappa Morya 🙏</div>',
+    '<div class="morya">'
+    'Ganpati Bappa Morya 🙏'
+    '</div>',
     unsafe_allow_html=True
 )
 
