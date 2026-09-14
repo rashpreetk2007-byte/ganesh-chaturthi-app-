@@ -1,7 +1,8 @@
 import streamlit as st
 from PIL import Image
-import os
+from pathlib import Path
 import random
+import time
 
 # =========================================================
 # HAPPY GANESH CHATURTHI 2026
@@ -22,905 +23,534 @@ st.set_page_config(
 if "count" not in st.session_state:
     st.session_state.count = 0
 
-if "flowers" not in st.session_state:
-    st.session_state.flowers = 0
-
 if "blessing" not in st.session_state:
-    st.session_state.blessing = (
-        "🙏 May Bappa bless you with happiness, peace and success. 🙏"
-    )
+    st.session_state.blessing = 0
 
+if "show_about" not in st.session_state:
+    st.session_state.show_about = False
 
-# =========================================================
-# THEME
-# =========================================================
-
-theme = st.selectbox(
-    "🎨 Choose Theme",
-    [
-        "🌅 Cream & Saffron",
-        "🌸 Divine Pink",
-        "🌼 Golden Festive",
-        "💙 Divine Sky"
-    ]
-)
-
+if "animation" not in st.session_state:
+    st.session_state.animation = True
 
 # =========================================================
-# ANIMATION
+# COLORS
 # =========================================================
 
-animation = st.toggle(
-    "✨ Enable Animation",
-    value=True
-)
+BG_TOP = "#FFF4E6"
+BG_MIDDLE = "#FFE0B8"
+BG_BOTTOM = "#FFF8F0"
 
+SAFFRON = "#D96B16"
+GOLD = "#F0A51A"
+DARK = "#713B20"
+PINK = "#D94F87"
+GREEN = "#3C8C68"
+WHITE = "#FFFFFF"
 
 # =========================================================
-# THEME COLOURS
+# CUSTOM CSS
 # =========================================================
 
-if theme == "🌸 Divine Pink":
+animation_css = ""
 
-    background = """
-        radial-gradient(circle at 50% 8%,
-        rgba(255,150,180,0.38),
-        transparent 30%),
-        linear-gradient(
-        180deg,
-        #fff5f7 0%,
-        #ffe2e8 50%,
-        #fff0e5 100%
-        )
+if st.session_state.animation:
+    animation_css = """
+    .flower {
+        position: fixed;
+        z-index: 1;
+        pointer-events: none;
+        font-size: 24px;
+        animation: fall 8s linear infinite;
+        opacity: 0.75;
+    }
+
+    .flower1 {
+        left: 5%;
+        animation-delay: 0s;
+    }
+
+    .flower2 {
+        left: 20%;
+        animation-delay: 2s;
+    }
+
+    .flower3 {
+        left: 40%;
+        animation-delay: 4s;
+    }
+
+    .flower4 {
+        left: 65%;
+        animation-delay: 1s;
+    }
+
+    .flower5 {
+        left: 85%;
+        animation-delay: 3s;
+    }
+
+    @keyframes fall {
+        0% {
+            top: -50px;
+            transform: rotate(0deg);
+            opacity: 0;
+        }
+
+        15% {
+            opacity: 0.8;
+        }
+
+        50% {
+            transform: rotate(180deg);
+        }
+
+        100% {
+            top: 105vh;
+            transform: rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    .sparkle {
+        position: fixed;
+        z-index: 1;
+        pointer-events: none;
+        color: #F0A51A;
+        font-size: 20px;
+        animation: sparkleMove 6s linear infinite;
+    }
+
+    .spark1 {
+        left: 12%;
+        animation-delay: 1s;
+    }
+
+    .spark2 {
+        left: 50%;
+        animation-delay: 3s;
+    }
+
+    .spark3 {
+        left: 78%;
+        animation-delay: 5s;
+    }
+
+    @keyframes sparkleMove {
+        0% {
+            bottom: -30px;
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        100% {
+            bottom: 105vh;
+            opacity: 0;
+        }
+    }
     """
-
-    title_color = "#b83268"
-    accent_color = "#d94f82"
-
-elif theme == "🌼 Golden Festive":
-
-    background = """
-        radial-gradient(circle at 50% 8%,
-        rgba(255,190,45,0.45),
-        transparent 30%),
-        linear-gradient(
-        180deg,
-        #fffbed 0%,
-        #ffedb8 50%,
-        #fff1d5 100%
-        )
-    """
-
-    title_color = "#a85b00"
-    accent_color = "#d98208"
-
-elif theme == "💙 Divine Sky":
-
-    background = """
-        radial-gradient(circle at 50% 8%,
-        rgba(110,190,255,0.30),
-        transparent 30%),
-        linear-gradient(
-        180deg,
-        #f7fcff 0%,
-        #dff2ff 50%,
-        #fff1dc 100%
-        )
-    """
-
-    title_color = "#17649b"
-    accent_color = "#287fb8"
-
-else:
-
-    background = """
-        radial-gradient(circle at 50% 8%,
-        rgba(255,195,65,0.42),
-        transparent 30%),
-
-        radial-gradient(circle at 8% 65%,
-        rgba(255,150,180,0.24),
-        transparent 25%),
-
-        radial-gradient(circle at 92% 70%,
-        rgba(255,210,90,0.25),
-        transparent 25%),
-
-        linear-gradient(
-        180deg,
-        #fffaf0 0%,
-        #fff0d5 48%,
-        #ffe5c4 100%
-        )
-    """
-
-    title_color = "#b84f08"
-    accent_color = "#d87908"
-
-
-# =========================================================
-# MAIN CSS
-# =========================================================
 
 st.markdown(
     f"""
-<style>
+    <style>
 
-* {{
-    box-sizing: border-box;
-}}
+    /* =====================================================
+       MAIN BACKGROUND
+       ===================================================== */
 
+    .stApp {{
+        background:
+            radial-gradient(
+                circle at 50% 15%,
+                rgba(255,255,255,0.95),
+                transparent 25%
+            ),
+            linear-gradient(
+                180deg,
+                {BG_TOP} 0%,
+                {BG_MIDDLE} 52%,
+                {BG_BOTTOM} 100%
+            );
 
-/* =====================================================
-   BACKGROUND
-   ===================================================== */
-
-.stApp {{
-
-    min-height: 100vh;
-
-    background:
-        {background};
-
-    color: #5b321c;
-}}
-
-
-/* =====================================================
-   PHONE CONTAINER
-   ===================================================== */
-
-.block-container {{
-
-    max-width: 500px !important;
-
-    padding-top: 14px !important;
-
-    padding-left: 11px !important;
-
-    padding-right: 11px !important;
-
-    padding-bottom: 35px !important;
-
-    margin: auto;
-}}
-
-
-/* =====================================================
-   TITLE
-   ===================================================== */
-
-.main-title {{
-
-    text-align: center;
-
-    color: {title_color};
-
-    font-size: clamp(
-        28px,
-        8vw,
-        42px
-    );
-
-    font-weight: 900;
-
-    line-height: 1.12;
-
-    margin-top: 5px;
-
-    margin-bottom: 3px;
-
-    animation:
-        titleGlow 2.5s ease-in-out infinite alternate;
-}}
-
-
-@keyframes titleGlow {{
-
-    from {{
-
-        text-shadow:
-            0 2px 5px
-            rgba(150,75,0,0.12);
+        min-height: 100vh;
     }}
-
-    to {{
-
-        text-shadow:
-            0 2px 8px
-            rgba(220,130,20,0.35),
-
-            0 0 20px
-            rgba(255,190,60,0.25);
-    }}
-}}
-
-
-/* =====================================================
-   YEAR
-   ===================================================== */
-
-.year {{
-
-    text-align: center;
-
-    color: {accent_color};
-
-    font-size: 39px;
-
-    font-weight: 900;
-
-    line-height: 1;
-
-    margin-bottom: 9px;
-}}
-
-
-/* =====================================================
-   SUBTITLE
-   ===================================================== */
-
-.subtitle {{
-
-    text-align: center;
-
-    color: #63391f;
-
-    font-size: 16px;
-
-    font-weight: 650;
-
-    line-height: 1.5;
-
-    padding: 0 9px;
-
-    margin-bottom: 12px;
-}}
-
-
-/* =====================================================
-   DECORATION
-   ===================================================== */
-
-.decor {{
-
-    text-align: center;
-
-    color: {accent_color};
-
-    font-size: 20px;
-
-    letter-spacing: 7px;
-
-    margin-bottom: 13px;
-}}
-
-
-/* =====================================================
-   IMAGE CARD
-   ===================================================== */
-
-.image-card {{
-
-    width: 100%;
-
-    max-width: 445px;
-
-    margin: auto;
-
-    padding: 8px;
-
-    border-radius: 25px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #fffefa,
-            #fff0d2
-        );
-
-    border: 3px solid #dfa52f;
-
-    overflow: hidden;
-
-    animation:
-        imageGlow 3s ease-in-out infinite alternate;
-}}
-
-
-@keyframes imageGlow {{
-
-    from {{
-
-        box-shadow:
-            0 5px 20px
-            rgba(150,85,20,0.14),
-
-            0 0 18px
-            rgba(230,165,50,0.20);
-    }}
-
-    to {{
-
-        box-shadow:
-            0 5px 20px
-            rgba(150,85,20,0.14),
-
-            0 0 40px
-            rgba(230,165,50,0.45);
-    }}
-}}
-
-
-/* =====================================================
-   GANESH IMAGE
-   ===================================================== */
-
-.image-card img {{
-
-    width: 100% !important;
-
-    max-height: 440px !important;
-
-    object-fit: contain !important;
-
-    border-radius: 18px !important;
-
-    display: block;
-
-    margin: auto;
-}}
-
-
-/* =====================================================
-   DIYAS
-   ===================================================== */
-
-.diya-row {{
-
-    text-align: center;
-
-    font-size: 27px;
-
-    letter-spacing: 12px;
-
-    margin-top: 14px;
-
-    margin-bottom: 13px;
-
-    animation:
-        diyaGlow 1.7s ease-in-out infinite alternate;
-}}
-
-
-@keyframes diyaGlow {{
-
-    from {{
-
-        transform: scale(0.98);
-
-        filter: brightness(0.95);
-    }}
-
-    to {{
-
-        transform: scale(1.05);
-
-        filter: brightness(1.18);
-    }}
-}}
-
-
-/* =====================================================
-   CARDS
-   ===================================================== */
-
-.section-card {{
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.80
-        );
-
-    border:
-        1px solid
-        rgba(
-            205,
-            130,
-            35,
-            0.27
-        );
-
-    border-radius: 19px;
-
-    padding: 14px;
-
-    margin-top: 13px;
-
-    box-shadow:
-        0 5px 18px
-        rgba(
-            140,
-            75,
-            20,
-            0.09
-        );
-}}
-
-
-/* =====================================================
-   HEADINGS
-   ===================================================== */
-
-.section-card h3 {{
-
-    color: #98450b !important;
-
-    font-weight: 850 !important;
-}}
-
-
-/* =====================================================
-   MANTRA
-   ===================================================== */
-
-.mantra {{
-
-    text-align: center;
-
-    color: #a94e08;
-
-    font-size: 20px;
-
-    font-weight: 800;
-
-    padding: 10px 4px;
-}}
-
-
-/* =====================================================
-   COUNTER
-   ===================================================== */
-
-.counter {{
-
-    text-align: center;
-
-    color: {accent_color};
-
-    font-size: 29px;
-
-    font-weight: 900;
-
-    margin: 8px 0;
-}}
-
-
-/* =====================================================
-   BUTTONS
-   ===================================================== */
-
-.stButton > button {{
-
-    width: 100%;
-
-    min-height: 48px;
-
-    border-radius: 14px;
-
-    border: 2px solid #d89427;
-
-    background:
-        linear-gradient(
-            135deg,
-            #df8617,
-            #f1b532
-        );
-
-    color: white;
-
-    font-size: 15px;
-
-    font-weight: 800;
-
-    box-shadow:
-        0 4px 11px
-        rgba(
-            170,
-            90,
-            15,
-            0.16
-        );
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}}
-
-
-.stButton > button:hover {{
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 6px 15px
-        rgba(
-            170,
-            90,
-            15,
-            0.22
-        );
-
-    color: white;
-}}
-
-
-/* =====================================================
-   SELECTBOX
-   ===================================================== */
-
-.stSelectbox label {{
-
-    color: #63391f !important;
-
-    font-weight: 700 !important;
-}}
-
-
-/* =====================================================
-   TOGGLE
-   ===================================================== */
-
-.stCheckbox label {{
-
-    color: #63391f !important;
-
-    font-weight: 700 !important;
-}}
-
-
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
-.footer-main {{
-
-    text-align: center;
-
-    color: {title_color};
-
-    font-size: 22px;
-
-    font-weight: 900;
-
-    margin-top: 24px;
-}}
-
-
-.footer-credit {{
-
-    text-align: center;
-
-    color: #795c4b;
-
-    font-size: 12px;
-
-    margin-top: 9px;
-}}
-
-
-/* =====================================================
-   MOBILE
-   ===================================================== */
-
-@media (max-width:400px) {{
 
     .block-container {{
-
-        padding-left: 8px !important;
-
-        padding-right: 8px !important;
+        max-width: 520px !important;
+        padding-top: 15px !important;
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+        padding-bottom: 35px !important;
+        margin: auto;
     }}
 
-    .main-title {{
+    /* =====================================================
+       HEADER
+       ===================================================== */
 
-        font-size: 29px;
+    .main-title {{
+        text-align: center;
+        color: {SAFFRON};
+        font-size: clamp(30px, 8vw, 43px);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-top: 5px;
+        margin-bottom: 3px;
+
+        text-shadow:
+            0 2px 0 #ffffff,
+            0 4px 12px rgba(217,107,22,0.25);
     }}
 
     .year {{
-
-        font-size: 36px;
+        text-align: center;
+        color: {GOLD};
+        font-size: 42px;
+        font-weight: 900;
+        margin-bottom: 8px;
     }}
 
-    .subtitle {{
-
-        font-size: 15px;
+    .top-message {{
+        text-align: center;
+        color: {DARK};
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.45;
+        margin-bottom: 10px;
     }}
+
+    .stars {{
+        text-align: center;
+        color: {GOLD};
+        font-size: 22px;
+        letter-spacing: 7px;
+        margin-bottom: 13px;
+    }}
+
+    /* =====================================================
+       IMAGE
+       ===================================================== */
 
     .image-card {{
+        position: relative;
+        z-index: 3;
 
-        padding: 6px;
+        width: 100%;
+        padding: 8px;
 
-        border-radius: 21px;
+        border-radius: 25px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #FFFFFF,
+                #FFF0D7
+            );
+
+        border: 3px solid {GOLD};
+
+        box-shadow:
+            0 7px 25px rgba(180,100,20,0.22),
+            0 0 35px rgba(240,165,26,0.20);
+
+        margin-bottom: 12px;
     }}
 
     .image-card img {{
-
-        max-height: 390px !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 500px !important;
+        object-fit: contain !important;
+        border-radius: 18px !important;
+        display: block;
     }}
 
-    .diya-row {{
+    /* =====================================================
+       DIYAS
+       ===================================================== */
 
-        font-size: 24px;
+    .diyas {{
+        position: relative;
+        z-index: 4;
 
-        letter-spacing: 8px;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+
+        font-size: 28px;
+
+        margin: 8px 0 8px 0;
     }}
 
-}}
+    .diya {{
+        animation: diyaGlow 1.4s ease-in-out infinite alternate;
+    }}
 
+    @keyframes diyaGlow {{
+        from {{
+            transform: scale(0.90);
+            filter: brightness(0.9);
+        }}
 
-/* =====================================================
-   HIDE STREAMLIT DEFAULT UI
-   ===================================================== */
+        to {{
+            transform: scale(1.18);
+            filter: brightness(1.4);
+        }}
+    }}
 
-#MainMenu {{
-    visibility: hidden;
-}}
+    /* =====================================================
+       CARDS
+       ===================================================== */
 
-footer {{
-    visibility: hidden;
-}}
+    .card {{
+        position: relative;
+        z-index: 4;
 
-header {{
-    visibility: hidden;
-}}
+        background: rgba(255,255,255,0.88);
 
-</style>
-""",
+        border: 1px solid rgba(217,107,22,0.18);
+
+        border-radius: 20px;
+
+        padding: 15px;
+
+        margin-top: 14px;
+
+        box-shadow:
+            0 5px 18px rgba(120,70,30,0.10);
+    }}
+
+    .card-title {{
+        color: {DARK};
+        font-size: 23px;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }}
+
+    .mantra-display {{
+        text-align: center;
+
+        background:
+            linear-gradient(
+                135deg,
+                #FFF7E8,
+                #FFE5C0
+            );
+
+        color: {SAFFRON};
+
+        border-radius: 15px;
+
+        padding: 13px;
+
+        font-size: 20px;
+        font-weight: 800;
+
+        margin-top: 10px;
+    }}
+
+    /* =====================================================
+       BLESSING
+       ===================================================== */
+
+    .blessing-box {{
+        background:
+            linear-gradient(
+                135deg,
+                #E7F7EC,
+                #FFF9E8
+            );
+
+        border-left: 5px solid {GREEN};
+
+        border-radius: 15px;
+
+        padding: 14px;
+
+        color: #28714E;
+
+        font-size: 16px;
+
+        line-height: 1.55;
+
+        margin-top: 10px;
+    }}
+
+    /* =====================================================
+       GREETING CARD
+       ===================================================== */
+
+    .greeting {{
+        background:
+            linear-gradient(
+                135deg,
+                #FFF0F6,
+                #FFF8E9
+            );
+
+        border-radius: 18px;
+
+        padding: 17px;
+
+        color: {DARK};
+
+        font-size: 16px;
+
+        line-height: 1.65;
+
+        border: 1px solid #F1C8D7;
+    }}
+
+    /* =====================================================
+       COUNTER
+       ===================================================== */
+
+    .counter {{
+        text-align: center;
+        color: {SAFFRON};
+        font-size: 32px;
+        font-weight: 900;
+        margin: 10px 0;
+    }}
+
+    /* =====================================================
+       BUTTONS
+       ===================================================== */
+
+    .stButton > button {{
+        width: 100% !important;
+
+        min-height: 48px;
+
+        border-radius: 15px !important;
+
+        border: 2px solid #E39A20 !important;
+
+        background:
+            linear-gradient(
+                135deg,
+                #E88A17,
+                #F4B72D
+            ) !important;
+
+        color: white !important;
+
+        font-size: 16px !important;
+
+        font-weight: 800 !important;
+
+        box-shadow:
+            0 5px 13px rgba(180,100,20,0.18) !important;
+    }}
+
+    .stButton > button:hover {{
+        transform: translateY(-2px);
+        border-color: {SAFFRON} !important;
+    }}
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+
+    .morya {{
+        text-align: center;
+        color: {SAFFRON};
+        font-size: 23px;
+        font-weight: 900;
+        margin-top: 25px;
+    }}
+
+    .credit {{
+        text-align: center;
+        color: #896F60;
+        font-size: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }}
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 400px) {{
+
+        .block-container {{
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }}
+
+        .main-title {{
+            font-size: 29px;
+        }}
+
+        .year {{
+            font-size: 38px;
+        }}
+
+        .top-message {{
+            font-size: 16px;
+        }}
+
+        .image-card {{
+            padding: 6px;
+            border-radius: 21px;
+        }}
+
+        .image-card img {{
+            max-height: 440px !important;
+        }}
+
+        .card-title {{
+            font-size: 21px;
+        }}
+
+    }}
+
+    /* =====================================================
+       HIDE STREAMLIT DEFAULT
+       ===================================================== */
+
+    #MainMenu {{
+        visibility: hidden;
+    }}
+
+    footer {{
+        visibility: hidden;
+    }}
+
+    header {{
+        visibility: hidden;
+    }}
+
+    {animation_css}
+
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
-
 # =========================================================
-# FLOATING ANIMATION
+# ANIMATION ELEMENTS
 # =========================================================
 
-if animation:
+if st.session_state.animation:
 
     st.markdown(
         """
-<style>
-
-.festive-animation {
-
-    position: fixed;
-
-    inset: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    pointer-events: none;
-
-    overflow: hidden;
-
-    z-index: 0;
-}
-
-
-.float-item {
-
-    position: absolute;
-
-    bottom: -60px;
-
-    opacity: 0;
-
-    animation:
-        floatUp linear infinite;
-}
-
-
-.flower {
-
-    font-size: 22px;
-}
-
-
-.f1 {
-
-    left: 4%;
-
-    animation-duration: 8s;
-
-    animation-delay: 0s;
-}
-
-
-.f2 {
-
-    left: 18%;
-
-    animation-duration: 10s;
-
-    animation-delay: 2s;
-}
-
-
-.f3 {
-
-    left: 34%;
-
-    animation-duration: 9s;
-
-    animation-delay: 4s;
-}
-
-
-.f4 {
-
-    left: 51%;
-
-    animation-duration: 11s;
-
-    animation-delay: 1s;
-}
-
-
-.f5 {
-
-    left: 69%;
-
-    animation-duration: 8s;
-
-    animation-delay: 3s;
-}
-
-
-.f6 {
-
-    left: 87%;
-
-    animation-duration: 10s;
-
-    animation-delay: 5s;
-}
-
-
-.star {
-
-    font-size: 16px;
-}
-
-
-.s1 {
-
-    left: 10%;
-
-    animation-duration: 7s;
-
-    animation-delay: 1s;
-}
-
-
-.s2 {
-
-    left: 28%;
-
-    animation-duration: 9s;
-
-    animation-delay: 3s;
-}
-
-
-.s3 {
-
-    left: 46%;
-
-    animation-duration: 8s;
-
-    animation-delay: 0s;
-}
-
-
-.s4 {
-
-    left: 65%;
-
-    animation-duration: 10s;
-
-    animation-delay: 4s;
-}
-
-
-.s5 {
-
-    left: 83%;
-
-    animation-duration: 7s;
-
-    animation-delay: 2s;
-}
-
-
-@keyframes floatUp {
-
-    0% {
-
-        transform:
-            translateY(0)
-            rotate(0deg)
-            scale(0.7);
-
-        opacity: 0;
-    }
-
-    15% {
-
-        opacity: 0.8;
-    }
-
-    50% {
-
-        transform:
-            translateY(-50vh)
-            rotate(120deg)
-            scale(1);
-    }
-
-    85% {
-
-        opacity: 0.6;
-    }
-
-    100% {
-
-        transform:
-            translateY(-115vh)
-            rotate(260deg)
-            scale(1.2);
-
-        opacity: 0;
-    }
-}
-
-</style>
-
-
-<div class="festive-animation">
-
-    <div class="float-item flower f1">🌸</div>
-
-    <div class="float-item flower f2">🌺</div>
-
-    <div class="float-item flower f3">🌼</div>
-
-    <div class="float-item flower f4">🌸</div>
-
-    <div class="float-item flower f5">🌺</div>
-
-    <div class="float-item flower f6">🌼</div>
-
-
-    <div class="float-item star s1">✦</div>
-
-    <div class="float-item star s2">✧</div>
-
-    <div class="float-item star s3">✨</div>
-
-    <div class="float-item star s4">✦</div>
-
-    <div class="float-item star s5">✧</div>
-
-</div>
-""",
+        <div class="flower flower1">🌸</div>
+        <div class="flower flower2">🌺</div>
+        <div class="flower flower3">🌼</div>
+        <div class="flower flower4">🌸</div>
+        <div class="flower flower5">🌺</div>
+
+        <div class="sparkle spark1">✦</div>
+        <div class="sparkle spark2">✧</div>
+        <div class="sparkle spark3">✦</div>
+        """,
         unsafe_allow_html=True
     )
-
 
 # =========================================================
 # HEADER
@@ -929,75 +559,37 @@ if animation:
 st.markdown(
     """
     <div class="main-title">
-        🙏 Happy Ganesh Chaturthi 🙏
+        🙏 Happy Ganesh Chaturthi
     </div>
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    """
     <div class="year">
         2026
     </div>
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    """
-    <div class="subtitle">
+    <div class="top-message">
         🌸 May Bappa bless you with joy, peace & prosperity 🌸
     </div>
-    """,
-    unsafe_allow_html=True
-)
 
-st.markdown(
-    """
-    <div class="decor">
+    <div class="stars">
         ✦ ✦ ✦
     </div>
     """,
     unsafe_allow_html=True
 )
 
-
 # =========================================================
-# GANESH JI IMAGE
+# IMAGE
 # =========================================================
 
-image_files = [
-    "GaneshJi.png",
-    "GaneshJi.jpg",
-    "file_00000000a74482098265ae866f1a87d0.png"
-]
+image_file = Path("file_00000000a74482098265ae866f1a87d0.png")
 
-image_path = None
-
-for file_name in image_files:
-
-    if os.path.exists(file_name):
-
-        image_path = file_name
-
-        break
-
-
-if image_path:
+if image_file.exists():
 
     try:
+        img = Image.open(image_file)
 
-        ganesh_image = Image.open(image_path)
-
-        if ganesh_image.mode not in [
-            "RGB",
-            "RGBA"
-        ]:
-
-            ganesh_image = ganesh_image.convert(
-                "RGB"
-            )
+        if img.mode not in ("RGB", "RGBA"):
+            img = img.convert("RGB")
 
         st.markdown(
             '<div class="image-card">',
@@ -1005,7 +597,7 @@ if image_path:
         )
 
         st.image(
-            ganesh_image,
+            img,
             use_container_width=True
         )
 
@@ -1015,21 +607,13 @@ if image_path:
         )
 
     except Exception:
-
-        st.error(
-            "Ganesh Ji image could not be opened."
-        )
+        st.error("Ganesh Ji image could not be opened.")
 
 else:
-
-    st.warning(
-        "🙏 Ganesh Ji image not found."
+    st.error(
+        "Ganesh Ji image not found. "
+        "Check the PNG filename in GitHub."
     )
-
-    st.info(
-        "Put GaneshJi.png in the same GitHub folder as bappa.py."
-    )
-
 
 # =========================================================
 # DIYAS
@@ -1037,320 +621,251 @@ else:
 
 st.markdown(
     """
-    <div class="diya-row">
-        🪔 🪔 🪔
+    <div class="diyas">
+        <div class="diya">🪔</div>
+        <div class="diya">🪔</div>
+        <div class="diya">🪔</div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-
 # =========================================================
-# BLESSING
-# =========================================================
-
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
-
-st.subheader("🙏 Bappa's Blessing")
-
-blessings = [
-
-    "🙏 May Bappa remove every obstacle from your path. 🙏",
-
-    "🌸 May your life be filled with happiness and peace. 🌸",
-
-    "✨ May Lord Ganesha bless all your new beginnings. ✨",
-
-    "🪔 May your home be filled with prosperity and positivity. 🪔",
-
-    "🌺 May Bappa give you wisdom, strength and success. 🌺",
-
-    "🙏 May every difficulty become easier with Bappa's blessings. 🙏"
-
-]
-
-if st.button(
-    "✨ Receive New Blessing",
-    key="blessing_button",
-    use_container_width=True
-):
-
-    st.session_state.blessing = random.choice(
-        blessings
-    )
-
-st.success(
-    st.session_state.blessing
-)
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# DIVINE MANTRA
+# MANTRA
 # =========================================================
 
 st.markdown(
-    '<div class="section-card">',
+    """
+    <div class="card">
+        <div class="card-title">
+            🕉️ Divine Mantra
+        </div>
+    """,
     unsafe_allow_html=True
 )
 
-st.subheader("🕉️ Divine Mantra")
-
-mantras = [
-
-    "ॐ गं गणपतये नमः",
-
-    "ॐ श्री गणेशाय नमः",
-
-    "गणपति बप्पा मोरया",
-
-    "वक्रतुण्ड महाकाय"
-
-]
-
-selected_mantra = st.selectbox(
+mantra = st.selectbox(
     "Choose a mantra",
-    mantras,
-    key="mantra_select"
+    [
+        "ॐ गं गणपतये नमः",
+        "ॐ श्री गणेशाय नमः",
+        "गणपति बप्पा मोरया",
+        "वक्रतुण्ड महाकाय"
+    ],
+    label_visibility="visible"
 )
 
 st.markdown(
     f"""
-    <div class="mantra">
-        {selected_mantra}
+    <div class="mantra-display">
+        {mantra}
+    </div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
 # =========================================================
-# 108 MANTRA COUNTER
+# 108 COUNTER
 # =========================================================
 
 st.markdown(
-    '<div class="section-card">',
+    """
+    <div class="card">
+        <div class="card-title">
+            🔢 108 Mantra Counter
+        </div>
+    """,
     unsafe_allow_html=True
 )
-
-st.subheader("🔢 108 Mantra Counter")
 
 col1, col2 = st.columns(2)
 
 with col1:
 
-    if st.button(
-        "🙏 Chant +1",
-        key="chant_button",
-        use_container_width=True
-    ):
+    if st.button("🙏 Chant +1", use_container_width=True):
 
         if st.session_state.count < 108:
-
             st.session_state.count += 1
 
+        st.rerun()
 
 with col2:
 
-    if st.button(
-        "🔄 Reset",
-        key="reset_button",
-        use_container_width=True
-    ):
+    if st.button("🔄 Reset", use_container_width=True):
 
         st.session_state.count = 0
 
+        st.rerun()
+
+st.progress(
+    st.session_state.count / 108
+)
 
 st.markdown(
     f"""
     <div class="counter">
         {st.session_state.count} / 108
     </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+        )
+# =========================================================
+# BLESSINGS
+# =========================================================
+
+blessings = [
+    "🙏 May Lord Ganesha remove every obstacle and fill your life with happiness, peace and success. 🙏",
+
+    "🌸 May Bappa bring wisdom, prosperity and positivity into your life. 🌸",
+
+    "✨ May every new beginning be blessed by Lord Ganesha. ✨",
+
+    "🪔 May your home be filled with peace, love and divine blessings. 🪔",
+
+    "🌺 May Ganpati Bappa guide you towards success and happiness. 🌺",
+
+    "🙏 May Bappa bless you and your family with good fortune and peace. 🙏"
+]
+
+st.markdown(
+    """
+    <div class="card">
+        <div class="card-title">
+            🙏 Bappa's Blessings
+        </div>
     """,
     unsafe_allow_html=True
 )
 
-st.progress(
-    st.session_state.count / 108
-)
-
-if st.session_state.count == 108:
-
-    st.success(
-        "🌺 108 Mantra Complete! Ganpati Bappa Morya! 🙏"
-    )
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# FLOWER OFFERING
-# =========================================================
-
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
-
-st.subheader("🌸 Offer Flowers")
-
 if st.button(
-    "🌺 Offer Flower to Bappa",
-    key="flower_button",
+    "✨ Receive New Blessing",
     use_container_width=True
 ):
 
-    st.session_state.flowers += 1
-
-    st.toast(
-        "🌸 Flower offered to Bappa! 🙏"
+    st.session_state.blessing = random.randrange(
+        len(blessings)
     )
+
+    st.rerun()
 
 st.markdown(
     f"""
-    <div class="counter">
-        🌸 {st.session_state.flowers} Flowers
+    <div class="blessing-box">
+        {blessings[st.session_state.blessing]}
+    </div>
     </div>
     """,
     unsafe_allow_html=True
 )
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# FESTIVAL GREETING
-# =========================================================
-
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
-
-st.subheader("🎉 Festival Greeting")
-
-greetings = [
-
-    "Happy Ganesh Chaturthi! 🙏",
-
-    "Ganpati Bappa Morya! 🌺",
-
-    "May Bappa bless your family! 🪔",
-
-    "Wishing you peace, prosperity and happiness! ✨",
-
-    "May every new beginning be blessed by Lord Ganesha! 🌸"
-
-]
-
-selected_greeting = st.selectbox(
-    "Choose your greeting",
-    greetings,
-    key="greeting_select"
-)
-
-st.info(
-    selected_greeting
-)
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
 
 # =========================================================
 # ABOUT GANESH CHATURTHI
 # =========================================================
 
 st.markdown(
-    '<div class="section-card">',
+    """
+    <div class="card">
+        <div class="card-title">
+            📖 About Ganesh Chaturthi
+        </div>
+    """,
     unsafe_allow_html=True
 )
 
-st.subheader("📖 About Ganesh Chaturthi")
+if st.button(
+    "📚 Read About the Festival",
+    use_container_width=True
+):
 
-with st.expander("Read about the festival"):
+    st.session_state.show_about = not st.session_state.show_about
 
-    st.write(
-        "Ganesh Chaturthi is a festival dedicated "
-        "to Lord Ganesha. He is traditionally "
-        "worshipped as a symbol of wisdom, "
-        "auspicious beginnings and the remover "
+if st.session_state.show_about:
+
+    st.info(
+        "Ganesh Chaturthi is a Hindu festival celebrating "
+        "the birth of Lord Ganesha. It is associated with "
+        "wisdom, new beginnings, prosperity and the removal "
         "of obstacles."
     )
 
-    st.write(
-        "🙏 गणपति बप्पा मोरया 🙏"
-    )
-
 st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# SHARE MESSAGE
-# =========================================================
-
-st.markdown(
-    '<div class="section-card">',
-    unsafe_allow_html=True
-)
-
-st.subheader("📱 Bappa's Greeting")
-
-share_message = """🙏 Happy Ganesh Chaturthi 2026! 🙏
-
-May Lord Ganesha bless you and your family
-with happiness, peace, prosperity and success.
-
-🌺 Ganpati Bappa Morya! 🌺"""
-
-st.code(
-    share_message,
-    language=None
-)
-
-st.caption(
-    "Copy this message and share it with your family and friends."
-)
-
-st.markdown(
-    '</div>',
+    "</div>",
     unsafe_allow_html=True
 )
 
 # =========================================================
-# FINAL FOOTER
+# GREETING CARD
 # =========================================================
 
 st.markdown(
     """
-    <div class="footer-main">
+    <div class="card">
+        <div class="card-title">
+            📱 Bappa's Greeting
+        </div>
+
+        <div class="greeting">
+
+        🙏 Happy Ganesh Chaturthi 2026! 🙏
+
+        <br><br>
+
+        May Lord Ganesha bless you and your family
+        with happiness, peace, prosperity and success.
+
+        <br><br>
+
+        🌺 Ganpati Bappa Morya! 🌺
+
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# =========================================================
+# ANIMATION SWITCH
+# =========================================================
+
+st.markdown(
+    """
+    <div class="card">
+        <div class="card-title">
+            ✨ Animation
+        </div>
+    """,
+    unsafe_allow_html=True
+)
+
+new_animation = st.toggle(
+    "🌸 Falling Flowers & Sparkles",
+    value=st.session_state.animation
+)
+
+if new_animation != st.session_state.animation:
+
+    st.session_state.animation = new_animation
+
+    st.rerun()
+
+st.markdown(
+    "</div>",
+    unsafe_allow_html=True
+)
+
+# =========================================================
+# FOOTER
+# =========================================================
+
+st.markdown(
+    """
+    <div class="morya">
         🌺 Ganpati Bappa Morya 🙏
     </div>
 
-    <div class="footer-credit">
+    <div class="credit">
         Developed by Rashpreet Kaur Arora | BCA 2nd Year
     </div>
     """,
